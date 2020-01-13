@@ -1,72 +1,111 @@
-
-import java.util.Scanner;
+import java.util.*;
+/*
+ *Cart class is for storing information of cart
+ *products in cart and their quantity and total bill
+ */
 
 class Cart {
-	public static void main(String[] args) {
-		int choice,x=0,y=0,total=0;
-		Scanner input = new Scanner(System.in);
-		System.out.println("\t\t\t\t ShopCart\n");
-		System.out.println("Item List\n\t1.Pen@rs10\t2.Pencil@rs20\t3.Eraser@rs30\n");
-		String[] item={"Pen","Pencil","Eraser"};
-		int[] price = {10,20,30};
-		int[] quantity = {0,0,0};
-		try{
-			do{
-				System.out.println("Choose Appropriate option");
-				System.out.println("1.Add item/Update Quantity");
-				System.out.println("0.Generate Bill\n");
-				choice = input.nextInt();
-				switch(choice)
-				{case 0 :
-					{
-						if((quantity[0]==0)&&(quantity[1]==0)&&(quantity[2]==0))
-						{
-							System.out.println("Bill Can't be generated, reason : Empty Cart");
-						}
-						else
-						{
-							System.out.println("Hurray! Bill Generated:");
-							for(int i=0;i<3;i++)
-							{
-								if(quantity[i]>0)
-								{
-									total= total + quantity[i]*price[i];
-									System.out.println("Item name: "+item[i]+"\tQuantity:"+quantity[i]+"\tPrice: "+price[i]*quantity[i]);
-								}
-							}
-							System.out.println("Grand Total: "+total);
-						}
-					}
-					break;
-				case 1 :
-					{
-						System.out.println("Choose id number of the item");
-						x = input.nextInt();
-						System.out.println("Set Quantity");
-						y = input.nextInt();
-						quantity[x-1]=y;
-						if((quantity[0]==0)&&(quantity[1]==0)&&(quantity[2]==0))
-							{
-								System.out.println("No items have been added to the cart");
-							}
-						else
-							{
-								for(int i=0;i<3;i++)
-									{
-										if(quantity[i]>0)
-										{
-											System.out.println("Item name: "+item[i]+"\tQuantity:"+quantity[i]+"\tPrice: "+price[i]*quantity[i]);
-										}
-									}
-							}
-					}
-				}
-			}
-			while((choice>=1)&&(choice<2));
+	Map<Integer,Integer> map= new HashMap();
+
+	Item pencil,pen;
+	/*
+	 * function to add item
+	 */
+	void addItem(int id)
+	{
+		if(!map.containsKey(id))
+		{
+			map.put(id,1);
+
+			System.out.println("inserted sucessfully\n\n");
 		}
-		catch(Exception ex)
-			{
-				System.out.println("Please enter only valid integer in choices/id number ");
-			}
-}
+		else
+		{	
+			System.out.println("item already exists\n\n");
+		}
+	}
+	
+	/*
+	 * function to remove item
+	 */
+
+	void removeItem(int id)
+	{
+		if(map.containsKey(id))
+		{
+			map.remove(id);
+			System.out.println("removed sucessfully\n\n");
+		}
+		else
+		{
+			System.out.println("item not exists\n\n");
+		}
+
+	}
+
+	/*
+	 *function to increase quantity
+	 */
+	void increaseItem(int id)
+	{
+		if(map.containsKey(id))
+		{
+			map.put(id,map.get(id)+1);
+			System.out.println("updated sucessfully\n\n");
+		}
+		else
+		{
+			System.out.println("please add a item first\n\n");
+		}
+	}
+
+	/*
+	 * function to display the items in cart
+	 */
+	void displayCart(ArrayList<Item> allItems)
+	{	
+		System.out.println("Your cart contain");
+		System.out.println("Item\t name\tQuantity\n");
+		for(Map.Entry m:map.entrySet())
+		{  
+			System.out.println(m.getKey()+" \t "+allItems.get((int)m.getKey()-1).getName()+"\t"+m.getValue()+"\n\n"); 
+
+		}  
+		System.out.println("-------------------------------------------------------------------------------------------------------");
+
+	}
+	/*
+	 * this function decreases item from cart if it exists
+	 * if its quantity reaches 0, it removes item from the cart
+	 */
+
+	void decreaseItem(int id)
+	{	
+		if(map.containsKey(id)&&map.get(id)-1!=0)
+		{
+			map.put(id,map.get(id)-1);
+			System.out.println("updated sucessfully");
+		}
+		else if(map.get(id)-1==0)
+		{
+			map.remove(id);
+		}
+
+		else
+		{
+			System.out.println("please add a item first");
+		}
+	}
+
+	double generateBill(ArrayList<Item> allItems)
+	{
+		double totalBill=0;
+		for(Map.Entry m:map.entrySet())
+		{  
+			totalBill+= (int)m.getValue() * allItems.get((int)m.getKey()-1).getPrice();  
+		}  
+
+		return totalBill;
+	}
+
 }
